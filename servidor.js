@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
 const PORTA = 3000;
-
 
 let pets = [
     { id: 1, nome: "Rex", especie: "Cachorro" },
@@ -9,6 +9,12 @@ let pets = [
 ];
 app.get('/pets', function(req, res) {
     res.json(pets);
+});
+
+app.post('/pets', function(req, res){
+    let novoPet = req.body;
+    pets.push(novoPet);
+    res.json({mensagem: 'Pet foi adicionado com sucesso!', pet: novoPet});
 });
 
 app.get('/', function(req, res) {
