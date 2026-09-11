@@ -21,6 +21,14 @@ app.get('/', function(req, res) {
     res.send('Meu servidor PetShop está funcionando!');
 });
 
+
+app.get('/sobre', function(req, res) { 
+    res.json({ projeto: "PetShop Patas &amp; Pelos", 
+    modulo: "Módulo 7 - Backend com Node.js e Express"
+
+    });
+});
+
 app.listen(PORTA, function() {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
 });
