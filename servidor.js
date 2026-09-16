@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const { json } = require('stream/consumers');
 const app = express();
 app.use(express.json());
 const PORTA = 3000;
@@ -12,7 +13,10 @@ app.get('/pets', function(req, res) {
 
 app.post('/pets', function(req, res){
     let novoPet = req.body;
+    let textoLido= fs.readFileSync('dados.json', 'utf-8')
+    let pets = JSON.parse(textoLido);
     pets.push(novoPet);
+    fs.writeFileSync('dados.json', JSON.stringify(pets));
     res.json({mensagem: 'Pet foi adicionado com sucesso!', pet: novoPet});
 });
 

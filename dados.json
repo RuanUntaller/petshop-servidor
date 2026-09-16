@@ -1,4 +1,1 @@
-[
-    { "id": 1, "nome": "Rex", "espécie": "Cachorro" },
-    { "id": 2, "nome": "Mimi", "espécie": "Gato" }
-]
+[{"id":1,"nome":"Rex","espécie":"Cachorro"},{"id":2,"nome":"Mimi","espécie":"Gato"},{"nome":"Thor","especie":"Cachorro"},{"nome":"mimosa","especie":"Cachorro"}]
