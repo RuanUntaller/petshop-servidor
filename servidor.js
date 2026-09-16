@@ -1,13 +1,12 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 app.use(express.json());
 const PORTA = 3000;
 
-let pets = [
-    { id: 1, nome: "Rex", especie: "Cachorro" },
-    { id: 2, nome: "Mimi", especie: "Gato" }
-];
 app.get('/pets', function(req, res) {
+    let textoLido = fs.readFileSync('dados.json', 'utf-8'); 
+    let pets = JSON.parse(textoLido);
     res.json(pets);
 });
 
