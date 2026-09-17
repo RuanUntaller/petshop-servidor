@@ -47,6 +47,15 @@ app.get('/sobre', function(req, res) {
     });
 });
 
+app.get('/pets/total', function (req, res) {
+    let lerTexto = fs.readFileSync('dados.json')
+    let pets = JSON.parse(lerTexto);
+    res.json({total: pets.length})
+    
+})
+
+
+
 app.listen(PORTA, function() {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
 });
