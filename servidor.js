@@ -11,10 +11,25 @@ app.get('/pets', function(req, res) {
     res.json(pets);
 });
 
+function gerarNovoId (listaDePets){
+    let maiorId = 0;
+    for (let i = 0; i < listaDePets.length; i++ ){
+        if(listaDePets[i].id > maiorId){
+            maiorId = listaDePets[i].id;
+        }
+    }
+    return maiorId+1;
+}
+
 app.post('/pets', function(req, res){
-    let novoPet = req.body;
     let textoLido= fs.readFileSync('dados.json', 'utf-8')
     let pets = JSON.parse(textoLido);
+    let novoId = gerarNovoId(pets);
+    let novoPet = {
+    id: novoId,
+    nome: req.body.nome,
+    especie: req.body.especie
+}; 
     pets.push(novoPet);
     fs.writeFileSync('dados.json', JSON.stringify(pets));
     res.json({mensagem: 'Pet foi adicionado com sucesso!', pet: novoPet});
