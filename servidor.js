@@ -24,15 +24,14 @@ app.get('/pets', async function(req, res) {
     res.json(pets);
 });
 
-function gerarNovoId (listaDePets){
-    let maiorId = 0;
-    for (let i = 0; i < listaDePets.length; i++ ){
-        if(listaDePets[i].id > maiorId){
-            maiorId = listaDePets[i].id;
-        }
-    }
-    return maiorId+1;
-}
+app.post('/pets', async function (req, res) {
+    const novoPet = {
+        nome: req.body.nome,
+        especie: req.body.especie
+    };
+    const resultado = await colecaoPets.insertOne(novoPet);
+    res.json({mensagem: 'Pet adicionado com sucesso!', id: resultado.insertedId});    
+});
 
 app.post('/pets', function(req, res){
     let textoLido= fs.readFileSync('dados.json', 'utf-8')
