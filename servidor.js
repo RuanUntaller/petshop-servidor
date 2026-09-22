@@ -5,9 +5,22 @@ const app = express();
 app.use(express.json());
 const PORTA = 3000;
 
-app.get('/pets', function(req, res) {
-    let textoLido = fs.readFileSync('dados.json', 'utf-8'); 
-    let pets = JSON.parse(textoLido);
+const {MongoClient} = require('mongodb');
+const connectionString = "mongodb+srv://RuanUntaller:Ruan112321@petshopcluster.pgz0tav.mongodb.net/?appName=PetShopCluster";
+const client = new MongoClient(connectionString);
+
+let colecaoPets;
+
+async function conectarBanco() {
+    await client.connect();
+    const banco = client.db ('petshop');
+    colecaoPets = banco.collection('pets');
+    console.log ("Conectando a coleção de pets!");
+}
+conectarBanco();
+
+app.get('/pets', async function(req, res) {
+    const pets  = await colecaoPets.find({}).toArray();
     res.json(pets);
 });
 
