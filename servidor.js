@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const fs = require('fs');
 const { json } = require('stream/consumers');
@@ -5,8 +7,8 @@ const app = express();
 app.use(express.json());
 const PORTA = 3000;
 
-const {MongoClient} = require('mongodb');
-const connectionString = "mongodb+srv://RuanUntaller:Ruan112321@petshopcluster.pgz0tav.mongodb.net/?appName=PetShopCluster";
+const connectionString = process.env.MONGODB_URI;
+const { MongoClient } = require('mongodb'); 
 const client = new MongoClient(connectionString);
 
 let colecaoPets;
