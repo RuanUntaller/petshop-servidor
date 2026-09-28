@@ -1,3 +1,6 @@
+const cors = require('cors');
+
+
 require('dotenv').config();
 
 const express = require('express');
@@ -6,6 +9,8 @@ const { json } = require('stream/consumers');
 const app = express();
 app.use(express.json());
 const PORTA = 3000;
+
+app.use(cors());
 
 const connectionString = process.env.MONGODB_URI;
 const { MongoClient } = require('mongodb'); 
