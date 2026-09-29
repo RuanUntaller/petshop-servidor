@@ -32,26 +32,9 @@ app.get('/pets', async function(req, res) {
 });
 
 app.post('/pets', async function (req, res) {
-    const novoPet = {
-        nome: req.body.nome,
-        especie: req.body.especie
-    };
+    const novoPet = req.body;
     const resultado = await colecaoPets.insertOne(novoPet);
-    res.json({mensagem: 'Pet adicionado com sucesso!', id: resultado.insertedId});    
-});
-
-app.post('/pets', function(req, res){
-    let textoLido= fs.readFileSync('dados.json', 'utf-8')
-    let pets = JSON.parse(textoLido);
-    let novoId = gerarNovoId(pets);
-    let novoPet = {
-    id: novoId,
-    nome: req.body.nome,
-    especie: req.body.especie
-}; 
-    pets.push(novoPet);
-    fs.writeFileSync('dados.json', JSON.stringify(pets));
-    res.json({mensagem: 'Pet foi adicionado com sucesso!', pet: novoPet});
+    res.json({mensagem:'Pet adicionado com sucesso!', id: resultado.insertedId});
 });
 
 app.get('/', function(req, res) {
@@ -78,3 +61,4 @@ app.get('/pets/total', function (req, res) {
 app.listen(PORTA, function() {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
 });
+
