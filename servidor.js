@@ -31,6 +31,13 @@ app.get('/pets', async function(req, res) {
     res.json(pets);
 });
 
+
+app.get('/versao', function(req, res) {
+    res.json({ versao: '1.0' });
+});
+
+
+
 app.post('/pets', async function (req, res) {
     const novoPet = req.body;
     const resultado = await colecaoPets.insertOne(novoPet);
