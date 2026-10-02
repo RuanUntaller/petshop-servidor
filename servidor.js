@@ -13,7 +13,7 @@ const PORTA = 3000;
 app.use(cors());
 
 const connectionString = process.env.MONGODB_URI;
-const { MongoClient } = require('mongodb'); 
+const { MongoClient, ObjectId } = require('mongodb'); 
 const client = new MongoClient(connectionString);
 
 let colecaoPets;
@@ -36,6 +36,13 @@ app.post('/pets', async function (req, res) {
     const resultado = await colecaoPets.insertOne(novoPet);
     res.json({mensagem:'Pet adicionado com sucesso!', id: resultado.insertedId});
 });
+
+app.delete('/pets/:id', async function (req, res) {
+    const id = req.params.id;
+    const  resultado = await colecaoPets.deleteOne({_id: new ObjectId(id) });
+    res.json({ mensagem: 'Pet excluído!', apagados: resultado.deletedCount});
+});
+
 
 app.get('/', function(req, res) {
     res.send('Meu servidor PetShop está funcionando!');
