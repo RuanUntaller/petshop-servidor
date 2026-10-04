@@ -70,7 +70,22 @@ app.get('/pets/total', function (req, res) {
     
 })
 
+app.get('/pets/:id', async function(req,res){
+    const id = req.params.id;
+    const pet = await colecaoPets.findOne({_id: new ObjectId(id) });
+    res.json(pet);
+})
 
+app.put('/pets/:id', async function (req, res) {
+    const id = req.params.id;
+    const dadosNovos = req.body; 
+    
+    const resultado = await colecaoPets.updateOne(
+        {_id: new ObjectId(id) },
+        {$set: dadosNovos}
+    );
+    res.json ({mensagem: 'Pet atualizado!', alterados: resultado.modifiedCount });
+});
 
 app.listen(PORTA, function() {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
