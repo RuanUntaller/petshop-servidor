@@ -40,13 +40,19 @@ app.get('/versao', function(req, res) {
 
 app.post('/pets', async function (req, res) {
     const novoPet = req.body;
+    if (!novoPet.nome_pet || novoPet.nome_pet.trim() === ''){ 
+        return res.status(400).json({ mensagem: 'O nome do pet é obrigatório.'});    
+    }
     const resultado = await colecaoPets.insertOne(novoPet);
-    res.json({mensagem:'Pet adicionado com sucesso!', id: resultado.insertedId});
+    res.status(201).json({mensagem:'Pet adicionado com sucesso!', id: resultado.insertedId});
 });
 
 app.delete('/pets/:id', async function (req, res) {
     const id = req.params.id;
     const  resultado = await colecaoPets.deleteOne({_id: new ObjectId(id) });
+    if (resultado.deletedCount === 0) {
+        return res.status(404).json({ mensagem: 'Pet não encontrado.'});
+    }
     res.json({ mensagem: 'Pet excluído!', apagados: resultado.deletedCount});
 });
 
@@ -73,6 +79,9 @@ app.get('/pets/total', function (req, res) {
 app.get('/pets/:id', async function(req,res){
     const id = req.params.id;
     const pet = await colecaoPets.findOne({_id: new ObjectId(id) });
+    if (pet === null) {
+        return res.status(404).json({ mensagem: 'Pet não encontrado.'});
+    }
     res.json(pet);
 })
 
@@ -84,6 +93,9 @@ app.put('/pets/:id', async function (req, res) {
         {_id: new ObjectId(id) },
         {$set: dadosNovos}
     );
+    if (resultado.matchedCount === 0) {
+        return res.status(404).json({ mensagem: 'Pet não encontrado.'});
+    }
     res.json ({mensagem: 'Pet atualizado!', alterados: resultado.modifiedCount });
 });
 
