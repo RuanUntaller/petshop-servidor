@@ -35,6 +35,18 @@ app.get('/pets', async function(req, res) {
 
 app.get('/agendamentos', async function(req, res) {
     const agendamentos = await colecaoAgendamentos.find({}).toArray();
+    const pets = await colecaoPets.find({}).toArray();
+    
+    for (let i = 0; i < agendamentos.length; ++i ) {
+        agendamentos[i].nome_pet = 'Pet não cadastrado';
+
+        for (let j = 0; j < pets.length; j++) {
+            if (pets[j]._id.toString() === agendamentos[i].pet_id) {
+                agendamentos[i].nome_pet = pets[j].nome_pet;
+            }
+        }
+    }
+
     res.json(agendamentos);
 });
 
@@ -71,6 +83,17 @@ app.delete('/pets/:id', async function (req, res) {
         return res.status(404).json({ mensagem: 'Pet não encontrado.'});
     }
     res.json({ mensagem: 'Pet excluído!', apagados: resultado.deletedCount});
+});
+
+app.delete('/agendamentos/:id', async function (req, res){
+    const id = req.params.id;
+    const resultado = await colecaoAgendamentos.deleteOne({_id: new ObjectId(id)});
+
+    if (resultado.deletedCount === 0) {
+        return res.status(404).json({mensagem: 'Agendamento não encontrado.'});
+    }
+
+    res.json({ mensagem: 'Agendamento excluído!'});
 });
 
 
