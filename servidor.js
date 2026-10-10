@@ -34,11 +34,17 @@ app.get('/pets', async function(req, res) {
 });
 
 app.get('/agendamentos', async function(req, res) {
-    const agendamentos = await colecaoAgendamentos.find({}).toArray();
+    const filtro = {};
+
+    if (req.query.data) {
+        filtro.data = req.query.data;
+    }
+
+    const agendamentos = await colecaoAgendamentos.find(filtro).sort({ data: 1, hora: 1}).toArray();
     const pets = await colecaoPets.find({}).toArray();
     
-    for (let i = 0; i < agendamentos.length; ++i ) {
-        agendamentos[i].nome_pet = 'Pet não cadastrado';
+    for (let i = 0; i < agendamentos.length; i++ ) {
+        agendamentos[i].nome_pet = 'Pet não encontrado';
 
         for (let j = 0; j < pets.length; j++) {
             if (pets[j]._id.toString() === agendamentos[i].pet_id) {
