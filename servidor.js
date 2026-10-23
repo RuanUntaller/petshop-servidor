@@ -30,6 +30,18 @@ conectarBanco();
 
 app.get('/pets', async function(req, res) {
     const pets  = await colecaoPets.find({}).toArray();
+    const agendamentos = await colecaoAgendamentos.find({}).toArray();
+    const contagemPorPet = new Map();
+
+    for (const agendamento of agendamentos) {
+        const petId = agendamento.pet_id;
+        contagemPorPet.set(petId, (contagemPorPet.get(petId) || 0) + 1);
+    }
+
+    for (const pet of pets) {
+        pet.agendamentos_count = contagemPorPet.get(pet._id.toString()) || 0;
+    }
+
     res.json(pets);
 });
 
