@@ -20,6 +20,7 @@ Use exatamente estes nomes:
 - Valide os dados e retorne `res.status(400).json({ mensagem })` quando houver dados inválidos.
 - Retorne status `404` quando o registro não for encontrado e `201` ao criar um registro.
 - Declare rotas fixas, como `/pets/total`, antes das rotas dinâmicas, como `/pets/:id`.
+- Autenticação com bcrypt + jsonwebtoken; token no cabeçalho Authorization: Bearer; 401 para não autenticado.`
 
 ## Proibido
 - Nunca leia, cite, exiba ou altere o conteúdo do arquivo `.env`.
@@ -27,6 +28,7 @@ Use exatamente estes nomes:
 - Não altere a estrutura de pastas do projeto.
 - Não adicione bibliotecas sem me perguntar antes.
 - Não altere os nomes dos campos existentes no banco de dados sem minha autorização.
+- Guardar senhas sem hash bcrypt; colocar segredos (JWT) fora do .env; criar tokens sem expiração; devolver senha ou hash em respostas.
 
 ## Como testar
 - Execute `node servidor.js` para iniciar o backend localmente.
