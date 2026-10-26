@@ -20,7 +20,7 @@ Use exatamente estes nomes:
 - Valide os dados e retorne `res.status(400).json({ mensagem })` quando houver dados inválidos.
 - Retorne status `404` quando o registro não for encontrado e `201` ao criar um registro.
 - Declare rotas fixas, como `/pets/total`, antes das rotas dinâmicas, como `/pets/:id`.
-- Autenticação com bcrypt + jsonwebtoken; token no cabeçalho Authorization: Bearer; 401 para não autenticado.`
+- Autenticação com bcrypt + jsonwebtoken; token no cabeçalho Authorization: Bearer; 401 para não autenticado.
 
 ## Proibido
 - Nunca leia, cite, exiba ou altere o conteúdo do arquivo `.env`.
