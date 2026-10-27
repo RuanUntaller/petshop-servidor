@@ -1,4 +1,5 @@
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 
 
 require('dotenv').config();
@@ -18,12 +19,14 @@ const client = new MongoClient(connectionString);
 
 let colecaoPets;
 let colecaoAgendamentos;
+let colecaoUsuarios;
 
 async function conectarBanco() {
     await client.connect();
     const banco = client.db ('petshop');
     colecaoPets = banco.collection('pets');
     colecaoAgendamentos = banco.collection('agendamentos');
+    colecaoUsuarios = banco.collection('usuarios');
     console.log ("Conectando a coleção de pets!");
 }
 conectarBanco();
@@ -125,6 +128,29 @@ app.post('/agendamentos', async function(req, res) {
 
     const resultado = await colecaoAgendamentos.insertOne(novo);
     res.status(201).json({ mensagem: 'Agendamento criado!', id: resultado.insertedId });
+});
+
+app.post('/usuarios', async function(req, res) {
+    const { email, senha } = req.body || {};
+
+    if (typeof email !== 'string' || email.trim() === '' || typeof senha !== 'string' || senha.length === 0) {
+        return res.status(400).json({ mensagem: 'E-mail e senha são obrigatórios.' });
+    }
+
+    if (senha.length < 8) {
+        return res.status(400).json({ mensagem: 'A senha deve conter no mínimo 8 caracteres.' });
+    }
+
+    const emailNormalizado = email.trim();
+    const usuarioExistente = await colecaoUsuarios.findOne({ email: emailNormalizado });
+    if (usuarioExistente !== null) {
+        return res.status(400).json({ mensagem: 'Este e-mail já está cadastrado.' });
+    }
+
+    const senha_hash = await bcrypt.hash(senha, 10);
+    const resultado = await colecaoUsuarios.insertOne({ email: emailNormalizado, senha_hash });
+
+    res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!', id: resultado.insertedId });
 });
 
 app.delete('/pets/:id', async function (req, res) {
