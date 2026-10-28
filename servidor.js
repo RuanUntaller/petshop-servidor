@@ -1,5 +1,6 @@
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 require('dotenv').config();
@@ -128,6 +129,32 @@ app.post('/agendamentos', async function(req, res) {
 
     const resultado = await colecaoAgendamentos.insertOne(novo);
     res.status(201).json({ mensagem: 'Agendamento criado!', id: resultado.insertedId });
+});
+
+app.post('/login', async function(req, res) {
+    const { email, senha } = req.body || {};
+
+    if (typeof email !== 'string' || email.trim() === '' || typeof senha !== 'string' || senha.length === 0) {
+        return res.status(400).json({ mensagem: 'E-mail e senha são obrigatórios.' });
+    }
+
+    const emailNormalizado = email.trim();
+    const usuario = await colecaoUsuarios.findOne({ email: emailNormalizado });
+    const senhaValida = usuario !== null &&
+        typeof usuario.senha_hash === 'string' &&
+        await bcrypt.compare(senha, usuario.senha_hash);
+
+    if (!senhaValida) {
+        return res.status(401).json({ mensagem: 'Email ou senha inválidos' });
+    }
+
+    const token = jwt.sign(
+        { usuarioId: usuario._id.toString(), email: usuario.email },
+        process.env.JWT_SEGREDO,
+        { expiresIn: '8h' }
+    );
+
+    res.status(200).json({ token, email: usuario.email });
 });
 
 app.post('/usuarios', async function(req, res) {
