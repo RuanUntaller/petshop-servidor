@@ -22,6 +22,23 @@ let colecaoPets;
 let colecaoAgendamentos;
 let colecaoUsuarios;
 
+function autenticar(req, res, next) {
+    const autorizacao = req.get('Authorization');
+    const correspondencia = autorizacao && autorizacao.match(/^Bearer\s+(.+)$/i);
+
+    if (!correspondencia) {
+        return res.status(401).json({ mensagem: 'Faça login para continuar' });
+    }
+
+    try {
+        req.usuario = jwt.verify(correspondencia[1], process.env.JWT_SEGREDO);
+    } catch (erro) {
+        return res.status(401).json({ mensagem: 'Faça login para continuar' });
+    }
+
+    next();
+}
+
 async function conectarBanco() {
     await client.connect();
     const banco = client.db ('petshop');
@@ -85,7 +102,7 @@ app.get('/agendamentos/:id', async function(req, res) {
 });
 
 
-app.put('/agendamentos/:id', async function(req, res) {
+app.put('/agendamentos/:id', autenticar, async function(req, res) {
     const id = req.params.id;
     const dadosNovos = req.body;
 
@@ -111,7 +128,7 @@ app.get('/versao', function(req, res) {
 });
 
 
-app.post('/pets', async function (req, res) {
+app.post('/pets', autenticar, async function (req, res) {
     const novoPet = req.body;
     if (!novoPet.nome_pet || novoPet.nome_pet.trim() === ''){ 
         return res.status(400).json({ mensagem: 'O nome do pet é obrigatório.'});    
@@ -120,7 +137,7 @@ app.post('/pets', async function (req, res) {
     res.status(201).json({mensagem:'Pet adicionado com sucesso!', id: resultado.insertedId});
 });
 
-app.post('/agendamentos', async function(req, res) {
+app.post('/agendamentos', autenticar, async function(req, res) {
     const novo = req.body;
 
     if (!novo.pet_id || !novo.servico || !novo.data || !novo.hora) {
@@ -157,7 +174,7 @@ app.post('/login', async function(req, res) {
     res.status(200).json({ token, email: usuario.email });
 });
 
-app.post('/usuarios', async function(req, res) {
+app.post('/usuarios', autenticar, async function(req, res) {
     const { email, senha } = req.body || {};
 
     if (typeof email !== 'string' || email.trim() === '' || typeof senha !== 'string' || senha.length === 0) {
@@ -180,7 +197,7 @@ app.post('/usuarios', async function(req, res) {
     res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!', id: resultado.insertedId });
 });
 
-app.delete('/pets/:id', async function (req, res) {
+app.delete('/pets/:id', autenticar, async function (req, res) {
     const id = req.params.id;
     const agendamento = await colecaoAgendamentos.findOne({ pet_id: id });
     if (agendamento !== null) {
@@ -194,7 +211,7 @@ app.delete('/pets/:id', async function (req, res) {
     res.json({ mensagem: 'Pet excluído!', apagados: resultado.deletedCount});
 });
 
-app.delete('/agendamentos/:id', async function (req, res){
+app.delete('/agendamentos/:id', autenticar, async function (req, res){
     const id = req.params.id;
     const resultado = await colecaoAgendamentos.deleteOne({_id: new ObjectId(id)});
 
@@ -234,7 +251,7 @@ app.get('/pets/:id', async function(req,res){
     res.json(pet);
 })
 
-app.put('/pets/:id', async function (req, res) {
+app.put('/pets/:id', autenticar, async function (req, res) {
     const id = req.params.id;
     const dadosNovos = req.body; 
     
