@@ -28,7 +28,7 @@
 12-✅ Acessei o painel do Render, abri o serviço petshop-servidor e verifiquei, na seção Environment, que a variável JWT_SEGREDO está configurada.
 
 
-## 13. Comparação com o Copilot
+# 13- Comparação com o Copilot
 
 Depois de fazer os testes, pedi para o Copilot dar uma olhada na segurança do projeto.
 
@@ -40,3 +40,13 @@ Item 10: fiz logout e confirmei que o token sumiu do localStorage.
 Item 12: entrei no Render e vi que o JWT_SEGREDO estava configurado.
 
 No geral, o Copilot não encontrou nenhum problema. Só não conseguiu verificar algumas coisas que precisei testar diretamente no navegador e no Render.
+
+# 14- Realizei os testes em uma janela anônima, utilizando o pet Mel como registro de teste no Render.
+
+DELETE sem token: HTTP 401 — acesso bloqueado.
+
+DELETE com token falso: HTTP 401 — acesso bloqueado.
+
+Conferência final: o pet Mel continuou cadastrado no banco de dados.
+
+Os testes confirmaram que o backend bloqueia tentativas de exclusão sem autenticação válida.
